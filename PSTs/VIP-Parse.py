@@ -5,7 +5,7 @@ from pathlib import Path
 from xlwt import Workbook
 import re
 
-archive = PffArchive("Yoskue-Carter.pst")
+archive = PffArchive("pst_file_name.pst")
 eml_out = Path(Path.cwd() / "PSTs")
 
 if not eml_out.exists():
@@ -41,22 +41,6 @@ for folder in archive.folders():
                     sheet1.write(row_num, sender_col, email_sender)
                     sheet1.write(row_num, body_col, body_content)
 
-                def get_herrmann_email(text, row_num):
-                    if "@think.herrmann.com" or "@hbdi.com" in text:
-                        new_emails = re.findall(r'[\w\.-]+@think.herrmann.com', text)
-                        old_emails = re.findall(r'[\w\.-]+@hbdi.com', text)
-                        uk_emails = re.findall(r'[\w\.-]+@hbdi.co.uk', text)
-                        total = set(old_emails + new_emails + uk_emails)
-                        for email in total:
-                            if email not in herrmann_emails:
-                                herrmann_emails.add(email)
-                                print(herrmann_emails)
-                        emails = str(total).replace('{', '').replace('}', '').replace('\'', '')
-                        if emails != 'set()':
-                            sheet1.write(row_num, email_col, emails)
-                    else:
-                        return None
-
                 def format_sender_and_write(idx):
                     sender_str = i[0:idx]
                     if '<' in sender_str:
@@ -72,7 +56,6 @@ for folder in archive.folders():
                 if "From:" in body:
                     sub_messages = body.split("From: ")
                     write_to_excel(row, sender, sub_messages[0])
-                    get_herrmann_email(sub_messages[0], row)
                     del sub_messages[0]
                     row += 1
                     print(row)
@@ -80,7 +63,6 @@ for folder in archive.folders():
                     for i in sub_messages:
                         sub_message = i.rstrip()
                         sub_message = "From: " + sub_message
-                        get_herrmann_email(sub_message, row)
                         if '\r' in i and '\n' not in i:
                             index = i.index('\r')
                             format_sender_and_write(index)
@@ -95,6 +77,6 @@ for folder in archive.folders():
                         row += 1
                         print(row)
 
-                wb.save('test-archive.xls')
+                wb.save('Archive.xls')
 
 print("Done!")
