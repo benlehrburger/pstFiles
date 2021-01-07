@@ -1,3 +1,5 @@
+# Writes all PST file data to new Excel file
+
 from libratom.lib.pff import PffArchive
 from pathlib import Path
 from xlwt import Workbook
