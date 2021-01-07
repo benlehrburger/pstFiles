@@ -3,7 +3,7 @@ from pathlib import Path
 from xlwt import Workbook
 import re
 
-archive = PffArchive("Sample.pst")
+archive = PffArchive("pst_file_name.pst")
 eml_out = Path(Path.cwd() / "PSTs")
 
 if not eml_out.exists():
@@ -37,21 +37,9 @@ for folder in archive.folders():
                     sheet1.write(row_num, sender_col, email_sender)
                     sheet1.write(row_num, body_col, body_content)
 
-                def get_herrmann_email(text, row_num):
-                    if "@think.herrmann.com" or "@hbdi.com" in text:
-                        new_emails = re.findall(r'[\w\.-]+@think.herrmann.com', text)
-                        old_emails = re.findall(r'[\w\.-]+@hbdi.com', text)
-                        uk_emails = re.findall(r'[\w\.-]+@hbdi.co.uk', text)
-                        emails = str(set(old_emails + new_emails + uk_emails)).replace('{', '').replace('}', '').replace('\'', '')
-                        if emails != 'set()':
-                            sheet1.write(row_num, email_col, emails)
-                    else:
-                        return None
-
                 if "From:" in body:
                     sub_messages = body.split("From: ")
                     write_to_excel(row, sender, sub_messages[0])
-                    get_herrmann_email(sub_messages[0], row)
                     del sub_messages[0]
                     row += 1
                     print(row)
@@ -69,7 +57,6 @@ for folder in archive.folders():
                             new_sender = i[0:idx]
                         sub_message = i.rstrip()
                         sub_message = "From: " + sub_message
-                        get_herrmann_email(sub_message, row)
                         write_to_excel(row, new_sender, sub_message)
                         row += 1
                         print(row)
@@ -78,6 +65,6 @@ for folder in archive.folders():
                     row += 1
                     print(row)
 
-                wb.save('Sample-Full-Archive.xls')
+                wb.save('Archive.xls')
 
 print("Done!")
