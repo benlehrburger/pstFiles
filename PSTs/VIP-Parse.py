@@ -1,3 +1,5 @@
+# Writes PST data to new Excel file if the message is part of an email chain longer than one email
+
 from libratom.lib.pff import PffArchive
 from pathlib import Path
 from xlwt import Workbook
